@@ -4,16 +4,6 @@
 
 package glu
 
-// #cgo darwin LDFLAGS: -framework Carbon -framework OpenGL -framework GLUT
-// #cgo linux LDFLAGS: -lGLU
-// #cgo windows LDFLAGS: -lglu32
-//
-// #ifdef __APPLE__
-//   #include <OpenGL/glu.h>
-// #else
-//   #include <GL/glu.h>
-// #endif
-import "C"
 import (
 	"errors"
 	"reflect"
@@ -43,22 +33,22 @@ func ptr(v interface{}) unsafe.Pointer {
 	return unsafe.Pointer(et.UnsafeAddr())
 }
 
-func ErrorString(error C.GLenum) (string, error) {
-	e := unsafe.Pointer(C.gluErrorString(C.GLenum(error)))
+func ErrorString(error int32) (string, error) {
+	e := unsafe.Pointer(C.gluErrorString(int32(error)))
 	if e == nil {
 		return "", errors.New("Invalid GL error code")
 	}
 	return C.GoString((*C.char)(e)), nil
 }
 
-func Build2DMipmaps(target C.GLenum, internalFormat int, width, height int, format, typ C.GLenum, data interface{}) int {
+func Build2DMipmaps(target int32, internalFormat int, width, height int, format, typ int32, data interface{}) int {
 	return int(C.gluBuild2DMipmaps(
-		C.GLenum(target),
+		int32(target),
 		C.GLint(internalFormat),
-		C.GLsizei(width),
-		C.GLsizei(height),
-		C.GLenum(format),
-		C.GLenum(typ),
+		C.GLint(width),
+		C.GLint(height),
+		int32(format),
+		int32(typ),
 		ptr(data),
 	))
 }
